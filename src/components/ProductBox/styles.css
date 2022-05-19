@@ -1,0 +1,13 @@
+.productBox{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid #000;
+}
+.productBox h2{
+    font-size: 1em;
+}
+.productBox h3{
+    font-size: 0.8em;
+}
