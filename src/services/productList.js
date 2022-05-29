@@ -5,25 +5,28 @@ export function getAPI(){
     .then(res => res.json());
 }
 export function postAPI(data){
-    console.log(data, JSON.stringify(data))
-    return fetch(`${API_URL}/api/products`,
-    {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then((res) => res );
+    if(data){
+        return fetch(`${API_URL}/api/products`,
+        {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then((res) => res );
+    }
 }
 export function deleteAPI(id){
-    return fetch(`${API_URL}/api/products/${id}`,
-    {
-        method: 'DELETE',
-        headers: {
-        'Content-type': 'application/json'
-        }
-    })
+    if(id){
+        return fetch(`${API_URL}/api/products/${id}`,
+        {
+            method: 'DELETE',
+            headers: {
+            'Content-type': 'application/json'
+            }
+        })
+    }
 }
 export function putAPI(endpoint, data){
 }

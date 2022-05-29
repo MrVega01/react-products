@@ -3,7 +3,7 @@ import './App.css';
 import useLoadProducts from './hooks/useLoadProducts';
 import ProductBox from './components/ProductBox';
 import html2canvas from 'html2canvas';
-import { getAPI, postAPI } from './services/productList';
+import { postAPI } from './services/productList';
 
 function App() {
       //State
@@ -41,9 +41,9 @@ function App() {
   }, [image]);
 
   //SHOWING 
-  const products = useLoadProducts(getAPI);
+  let products = useLoadProducts(updated, deleted);
   
-  useLoadProducts();
+  //useLoadProducts();
 
   //UPLOADING
   const uploadProduct = (event)=>{

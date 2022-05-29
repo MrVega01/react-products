@@ -1,14 +1,15 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {getAPI} from '../services/productList';
 
-export default function useLoadProducts(){
+export default function useLoadProducts(updated, deleted){
+  console.log(updated, deleted);
     const [products, setProducts] = useState([]);
-//    useEffect(function(){
+    useEffect(function(){
         getAPI()
         .then(product =>{
           setProducts(product)
         });
-//    }, [setProducts]);
+    }, [updated, deleted]);
 
     return products;
 }
