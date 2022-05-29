@@ -1,28 +1,29 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
+import useLoadProducts from './hooks/useLoadProducts';
 import ProductBox from './components/ProductBox';
-import productList from './services/productList';
 import html2canvas from 'html2canvas';
+import { getAPI, postAPI } from './services/productList';
 
 function App() {
+      //State
+  //const [products, setProducts] = useState("");
+
   const [tass, setTass] = useState(0);
-  //Sorting
-  const products = productList().sort((a, b)=> {
-  if (a.name < b.name) {
-    return -1;
-  }
-  if (a.name > b.name) {
-    return 1;
-  }
-  return 0
-  });
-
-  const list = products.map(product => <ProductBox products={product} tass={tass}/>);
-
-  //DOWNLOAD IMAGE
+  const [list, setList] = useState("");
+  
   const [image, setImage] = useState('');
+
+  const [updated, setUpdated] = useState('');
+  const [deleted, setDeleted] = useState('');
+      //Ref
+
   const listContainer = useRef();
 
+  const productName = useRef();
+  const productPrice = useRef();
+
+  //DOWNLOAD IMAGE
   const downloadScreenshot = ()=>{
     html2canvas(listContainer.current, {logging:"false"})
     .then((canvas) => {
@@ -38,6 +39,35 @@ function App() {
         a.click();
     }
   }, [image]);
+
+  //SHOWING 
+  const products = useLoadProducts(getAPI);
+  
+  useLoadProducts();
+
+  //UPLOADING
+  const uploadProduct = (event)=>{
+    event.preventDefault();
+    const name = productName.current.value;
+    const price = productPrice.current.value;
+    setUpdated( postAPI({name: name, dollarPrice: Number(price), type: "Producto"}) );
+  }
+
+  useEffect(()=>{
+    if(products){
+      let sortProducts = products.sort((a, b)=>{
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
+      setList( sortProducts.map(product => <ProductBox key={product.id} products={product} tass={tass} deleted={setDeleted}/>) );
+    }
+  }, [products, tass, updated, deleted]);
+
   return (
     <div className="App">
       <div className="tassSetter">
@@ -52,6 +82,13 @@ function App() {
 			    M97.4,183.45c0-12.9-10.5-23.4-23.4-23.4c-13,0-23.5,10.5-23.5,23.4s10.5,23.4,23.4,23.4C86.9,206.95,97.4,196.45,97.4,183.45z
 			    M358.7,277.95c0-63.6-51.6-115.2-115.2-115.2s-115.2,51.6-115.2,115.2s51.6,115.2,115.2,115.2S358.7,341.55,358.7,277.95z"/>
 	        </g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+      </div>
+      <div>
+        <form>
+          <input type="text" ref={productName} placeholder='Nombre del producto'/>
+          <input type="number" ref={productPrice} placeholder='Precio en dólares'/>
+          <input type="submit" onClick={uploadProduct}/>
+        </form>
       </div>
       <div className='listContainer' ref={listContainer}>
         { list }
